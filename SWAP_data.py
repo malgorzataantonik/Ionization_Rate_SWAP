@@ -1,5 +1,5 @@
 # Małgorzata Anotnik, Space Research Centre PAS (CBK PAN), Bartycka 18a, 00-716 Warsaw, Poland
-# 01.07.2023
+# 26.09.2023
 # Program to calculate energy-angle response function for rotation-average FOV
 
 from astropy.io import fits
@@ -10,18 +10,26 @@ import astropy.units as u
 import pandas as pd 
 
 # time selection
-# available from 2008-10-29 to 2023-03-09
-time_start='2018-10-29'
-time_stop='2018-11-09'
+# available from 2008-10-29T18:08 to 2023-03-09T18:08
+time_start='2012-01-01T18:08'
+time_stop='2023-01-31T18:08'
 
 # loop for all days with observations
-days_series = pd.Series(pd.date_range(start=time_start, end=time_stop, freq="d"))
+days_series = pd.Series(pd.date_range(start=time_start, end=str(Time(time_stop)-1*u.day), freq="d"))
 for i in days_series:                       # 'i' is analyzed date
+    data_prev = str(Time(i)-1*u.day)
+    data_next = str(Time(i)+1*u.day)
+
     month=str(i.month)
     if i.month <= 9: month='0'+str(i.month)
     day=str(i.day)
     if i.day <= 9: day='0'+str(i.day)
+
     time_search=str(i.year)+month+day       # date in the appropriate format
+    time_search_prev = data_prev[0:4]+data_prev[5:7]+data_prev[8:10]
+    time_search_next = data_next[0:4]+data_next[5:7]+data_next[8:10]
+
+    start_stop_time = str(i.year)+'-'+month+'-'+day+'_'+data_next[0:4]+'-'+data_next[5:7]+'-'+data_next[8:10]
 
     # plan name for each day of observation: plutocruise, pluto, kemcrusie, kem1, kem2 (0, 2, 5, 12a, 12b)
     if Time(i) < Time('2008-10-29T10:02:34'): print("Niepoprawna data poczatkowa")
@@ -42,24 +50,36 @@ for i in days_series:                       # 'i' is analyzed date
     if Time(i) >= Time('2021-08-09T00:49:07'): energy_bins=values[4,:]
 
     # searching for data files
-    files = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search+'*\\swa*x586_sci.fit')
+
+    files_prev = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search_prev+'*\\swa*x586_sci.fit')
+    files_ok = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search+'*\\swa*x586_sci.fit')
+    files_next = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search_next+'*\\swa*x586_sci.fit')
+    files = np.concatenate((files_prev, files_ok, files_next))
+
     if len(files) == 0: continue # if no data is available, the next day is checked
 
     # resetting data before each new day
     tot_count_rate_bin_all_day=0
     sweeps_all_day=0
+    UTC_list = ''
 
     # loop through all files on a given day
     for file in files:
-        fits_file_name=file
+     fits_file_name=file
 
-        # FITS data
-        hdul = fits.open(fits_file_name)
-        MET_start = hdul[0].header['BEGTIME']
-        MET_end = hdul[0].header['ENDTIME']
-        UTC_start_time=str(Time('2006-01-19T18:09') + MET_start * u.second)
-        UTC_end_time=str(Time('2006-01-19T18:09') + MET_end * u.second)
+     # FITS data
+     hdul = fits.open(fits_file_name)
+     MET_start = hdul[0].header['BEGTIME']
+     MET_end = hdul[0].header['ENDTIME']
+     UTC_start_time=str(Time('2006-01-19T18:09', out_subfmt='date_hm') + MET_start * u.second)
+     UTC_end_time=str(Time('2006-01-19T18:09', out_subfmt='date_hm') + MET_end * u.second)
+
+     # selection of files analyzed within one day defined from 18:09 to 18:09 the following day
+     if (UTC_start_time >= Time(i)) & (UTC_end_time <= (Time(i)+1*u.day)):
+             
         UTC_start_stop_time = UTC_start_time[0:13]+'-'+UTC_start_time[14:16]+'_'+UTC_end_time[0:13]+'-'+UTC_end_time[14:16]
+        # list of start and end observation times from each selected FITS file
+        UTC_list = UTC_list + UTC_start_stop_time + ' '
 
         # defining whether it is Unnormalized Histogram (UH) or High Time Resolution Histogram (HTRH)
         hist_type=0     # control variable specifying the histogram type in the FITS file
@@ -90,7 +110,7 @@ for i in days_series:                       # 'i' is analyzed date
 
                 # saving Hight Time Resolution data from one histogram to a table
                 header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps = '+str(sweeps_hist)
-                np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\'+catalog_name+'\\'+UTC_start_stop_time+'_'+str(int(hdul[1].data[hist_nr]))+'.txt', np.c_[energy_bins,tot_count_rate_bin,tot_count_rate_bin_err], header=header)
+                np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'+UTC_start_stop_time+'_'+str(int(hdul[1].data[hist_nr]))+'_test.txt', np.c_[energy_bins,tot_count_rate_bin,tot_count_rate_bin_err], header=header)
 
                 # summing data from the entire file
                 tot_count_rate_bin_all_file=tot_count_rate_bin+tot_count_rate_bin_all_file
@@ -101,6 +121,12 @@ for i in days_series:                       # 'i' is analyzed date
 
         hdul.close() # closing FITS file
 
+     else:
+        hdul.close() # zamkniecie pliku FITS
+        continue
+
+    if sweeps_all_day == 0: continue
+
     # estimation of uncertainties for the whole day
     tot_count_rate_bin_all_day_err=np.sqrt(tot_count_rate_bin_all_day)/(sweeps_all_day) 
     count_rate_hz_all_day=tot_count_rate_bin_all_day/(sweeps_all_day*0.39) 
@@ -108,5 +134,5 @@ for i in days_series:                       # 'i' is analyzed date
 
 
     # saving data from whole day 
-    header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day)
-    np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\'+catalog_name+'\\'+UTC_start_stop_time+'.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
+    header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day) + '\n' + UTC_list
+    np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'+start_stop_time+'_test.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
