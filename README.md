@@ -26,4 +26,4 @@ Ionization Rate of Interstellar Neutral Helium from New Horizons/SWAP Observatio
   3. Update the default paths in the script for the data files and output directory:
 
    ``` data_path = "path/to/data"```
-   ```results_path_path = "path/to/results"```
+   ```results_path = "path/to/results"```
