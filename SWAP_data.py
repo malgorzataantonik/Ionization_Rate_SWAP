@@ -36,7 +36,7 @@ for i in days_series:                       # 'i' is analyzed date
     start_stop_time = str(i.year)+'-'+month+'-'+day+'_'+data_next[0:4]+'-'+data_next[5:7]+'-'+data_next[8:10]
 
     # plan name for each day of observation: plutocruise, pluto, kemcrusie, kem1, kem2 (0, 2, 5, 12a, 12b)
-    if Time(i) < Time('2008-10-29T10:02:34'): print("Niepoprawna data poczatkowa")
+    if Time(i) < Time('2008-10-29T10:02:34'): print("Error, no data")
     if Time(i) >= Time('2008-09-28T10:02:34'): catalog_name='nh-x-swap-3-plutocruise-v3.0'
     if Time(i) >= Time('2015-01-14T18:09:00'): catalog_name='nh-p-swap-3-pluto-v3.0'
     if Time(i) >= Time('2016-10-25T18:08:59'): catalog_name='nh-x-swap-3-kemcruise1-v2.0'
@@ -140,4 +140,5 @@ for i in days_series:                       # 'i' is analyzed date
     # saving data from whole day 
     header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day) + '\n' + UTC_list
     np.savetxt(results_path+start_stop_time+'.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
+
 
