@@ -14,6 +14,10 @@ import pandas as pd
 time_start='2012-01-01T18:08'
 time_stop='2023-01-31T18:08'
 
+# path names
+data_path = 'C:\\Users\\mantonik\\New_Horizons\\data\\'
+results_path = 'C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'
+
 # loop for all days with observations
 days_series = pd.Series(pd.date_range(start=time_start, end=str(Time(time_stop)-1*u.day), freq="d"))
 for i in days_series:                       # 'i' is analyzed date
@@ -51,9 +55,9 @@ for i in days_series:                       # 'i' is analyzed date
 
     # searching for data files
 
-    files_prev = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search_prev+'*\\swa*x586_sci.fit')
-    files_ok = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search+'*\\swa*x586_sci.fit')
-    files_next = glob.glob('C:\\Users\\mantonik\\New_Horizons\\data\\'+catalog_name+'\\data\\'+time_search_next+'*\\swa*x586_sci.fit')
+    files_prev = glob.glob(data_path+catalog_name+'\\data\\'+time_search_prev+'*\\swa*x586_sci.fit')
+    files_ok = glob.glob(data_path+catalog_name+'\\data\\'+time_search+'*\\swa*x586_sci.fit')
+    files_next = glob.glob(data_path+catalog_name+'\\data\\'+time_search_next+'*\\swa*x586_sci.fit')
     files = np.concatenate((files_prev, files_ok, files_next))
 
     if len(files) == 0: continue # if no data is available, the next day is checked
@@ -110,7 +114,7 @@ for i in days_series:                       # 'i' is analyzed date
 
                 # saving Hight Time Resolution data from one histogram to a table
                 header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps = '+str(sweeps_hist)
-                np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'+UTC_start_stop_time+'_'+str(int(hdul[1].data[hist_nr]))+'_test.txt', np.c_[energy_bins,tot_count_rate_bin,tot_count_rate_bin_err], header=header)
+                np.savetxt(results_path+UTC_start_stop_time+'_'+str(int(hdul[1].data[hist_nr]))+'.txt', np.c_[energy_bins,tot_count_rate_bin,tot_count_rate_bin_err], header=header)
 
                 # summing data from the entire file
                 tot_count_rate_bin_all_file=tot_count_rate_bin+tot_count_rate_bin_all_file
@@ -135,4 +139,4 @@ for i in days_series:                       # 'i' is analyzed date
 
     # saving data from whole day 
     header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day) + '\n' + UTC_list
-    np.savetxt('C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'+start_stop_time+'_test.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
+    np.savetxt(results_path+start_stop_time+'.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
