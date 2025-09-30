@@ -1,6 +1,6 @@
 # Małgorzata Anotnik, Space Research Centre PAS (CBK PAN), Bartycka 18a, 00-716 Warsaw, Poland
 # 26.09.2023
-# Program to calculate energy-angle response function for rotation-average FOV
+# Program to read FITS files and save SWAP spectrum to .txt files
 
 from astropy.io import fits
 import numpy as np
@@ -140,3 +140,4 @@ for i in days_series:                       # 'i' is analyzed date
     # saving data from whole day 
     header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day) + '\n' + UTC_list
     np.savetxt(results_path+start_stop_time+'.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
+
