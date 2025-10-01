@@ -22,16 +22,22 @@ Ionization Rate of Interstellar Neutral Helium from New Horizons/SWAP Observatio
   2. Download table A1 from [D. J. McComas et al 2022 ApJ 934 147](https://iopscience.iop.org/article/10.3847/1538-4357/ac7956#apjac7956t4).
   3. Update the default start/stop times in the script:
      
-   ```time_start = "YYYY-MM-DDThh:mm"```
-   ```time_stop = "YYYY-MM-DDThh:mm"```
+     ```time_start = "YYYY-MM-DDThh:mm"```
+     ```time_stop = "YYYY-MM-DDThh:mm"```
 
-  4. Update the default paths in the script for the data files (by default, data is in directories named the same as DATA_SET_ID, for example, 'nh-x-swap-3-plutocruise-v3.0'):
+  4. Update the default paths in the script:
+  
+     for the data files (by default, data is in directories named the same as DATA_SET_ID, for example, 'nh-x-swap-3-plutocruise-v3.0'):
 
-   ```data_path = "path/to/data"```
+     ```data_path = 'path/to/data'```
 
-   and output directory:
+     for table with SWAP energy bins (Tab. A1 from D. J. McComas et al 2022 ApJ 934 147):
+
+     ```bins_file_name='path/to/energy_bins_table'```
+
+     and for output directory:
    
-   ```results_path = "path/to/results"```
+     ```results_path = 'path/to/results'```
    
 # response_function.py
 
