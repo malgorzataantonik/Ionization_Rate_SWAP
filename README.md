@@ -19,13 +19,18 @@ Ionization Rate of Interstellar Neutral Helium from New Horizons/SWAP Observatio
   > ## Usage Instructions
 
   1. Download the New Horizons/SWAP and/or NH Kuiper Belt Extended Missions (KEM and KEM2)/SWAP calibrated data from [NASA PDS](https://pds-smallbodies.astro.umd.edu/data_sb/by_mission.shtml).
-  2. Update the default start/stop times in the script:
+  2. Download table A1 from [D. J. McComas et al 2022 ApJ 934 147](https://iopscience.iop.org/article/10.3847/1538-4357/ac7956#apjac7956t4).
+  3. Update the default start/stop times in the script:
+     
    ```time_start = "YYYY-MM-DDThh:mm"```
    ```time_stop = "YYYY-MM-DDThh:mm"```
 
-  3. Update the default paths in the script for the data files and output directory:
+  4. Update the default paths in the script for the data files (by default, data is in directories named the same as DATA_SET_ID, for example, 'nh-x-swap-3-plutocruise-v3.0'):
 
-   ``` data_path = "path/to/data"```
+   ```data_path = "path/to/data"```
+
+   and output directory:
+   
    ```results_path = "path/to/results"```
    
 # response_function.py
