@@ -17,6 +17,7 @@ time_stop='2023-01-31T18:08'
 # path names
 data_path = 'C:\\Users\\mantonik\\New_Horizons\\data\\'
 results_path = 'C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'
+bins_file_name='C:\\Users\\mantonik\\New_Horizons\\data\\histogram_energy_bins.txt'
 
 # loop for all days with observations
 days_series = pd.Series(pd.date_range(start=time_start, end=str(Time(time_stop)-1*u.day), freq="d"))
@@ -45,7 +46,6 @@ for i in days_series:                       # 'i' is analyzed date
     if Time(i) > Time('2023-03-09T02:02:03'): print("Error, no data")
 
     # energy bins
-    bins_file_name='C:\\Users\\mantonik\\New_Horizons\\data\\histogram_energy_bins.txt'
     with open(bins_file_name,'rt') as filedata:
             values = np.genfromtxt(bins_file_name, comments='#', unpack=True)
     if Time(i) < Time('2008-09-28T10:02:34'): energy_bins=values[1,:]
@@ -140,5 +140,6 @@ for i in days_series:                       # 'i' is analyzed date
     # saving data from whole day 
     header='Energy bin [eV/q]           Total counts            Total counts error \nsweeps all day = '+str(sweeps_all_day) + '\n' + UTC_list
     np.savetxt(results_path+start_stop_time+'.txt', np.c_[energy_bins,tot_count_rate_bin_all_day,tot_count_rate_bin_all_day_err], header=header)
+
 
 
