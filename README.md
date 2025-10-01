@@ -27,3 +27,17 @@ Ionization Rate of Interstellar Neutral Helium from New Horizons/SWAP Observatio
 
    ``` data_path = "path/to/data"```
    ```results_path = "path/to/results"```
+
+   # response_function.py
+
+     > ## Requirements
+
+   - Python 3.x
+   - Libraries: numpy, scipy
+     
+   # solar_wind_parameters.py
+
+     > ## Requirements
+
+   - Python 3.9+
+   - Libraries: numpy, astropy, scipy, pandas, torch, solarsystem, uncertainties
