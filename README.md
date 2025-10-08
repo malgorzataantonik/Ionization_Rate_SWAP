@@ -1,5 +1,6 @@
 # Ionization_Rate_SWAP
 Ionization Rate of Interstellar Neutral Helium from New Horizons/SWAP Observations
+
 Manuscript submitted to ApJ
 
 ## Main Files
@@ -15,8 +16,6 @@ Manuscript submitted to ApJ
    - Python 3.x
    - Libraries: numpy, astropy, pandas
    
-   Make sure all required packages are installed.
-  
   > ## Usage Instructions
 
   1. Download the New Horizons/SWAP and/or NH Kuiper Belt Extended Missions (KEM and KEM2)/SWAP calibrated data from [NASA PDS](https://pds-smallbodies.astro.umd.edu/data_sb/by_mission.shtml).
