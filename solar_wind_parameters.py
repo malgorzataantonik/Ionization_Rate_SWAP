@@ -176,7 +176,7 @@ def cxsig(v_b):
 # saving results to .txt file
 def save_to_file():
         
-        f = open('C:\\Users\\mantonik\\New_Horizons\\results_parameters\\results_'+str(dates_start[day_nr])+'_n_iter_'+str(n_iter)+'.txt', "w")
+        f = open(result_path+str(dates_start[day_nr])+'_n_iter_'+str(n_iter)+'.txt', "w")
         f.write("# "+str(dates_list[day_nr])+"\n")
         f.write("# H+ fit results: u_sw [m s-1], T [K], 1_kappa, n [m-3], L \n")
         f.write(str(u_p)+' '+str(T_p)+' '+str(kappa)+' '+str(n_p)+' '+str(result_proton.fun)+'\n')
@@ -206,7 +206,8 @@ def save_to_file():
 
 ##############################################################################################################################################################################################################################################################
 
-# start perameters
+# start parameters
+result_path = 'C:\\Users\\mantonik\\New_Horizons\\results_parameters\\results_'
 days_to_analyze = '2021-01-17' # one example day; program the program works for plans 12a and 12b: from 2008-10-29 to 2023-03-09
 print_output = 1    # 0 - no, 1 - yes
 n_itertions = 2     # number of iterations
@@ -617,5 +618,6 @@ for i_day in dates_start:                       # days loop (i_day)
 
 # save to file
         save_to_file()
+
 
     day_nr = day_nr + 1 # end of the loop/day
