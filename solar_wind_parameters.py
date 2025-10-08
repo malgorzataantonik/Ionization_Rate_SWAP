@@ -321,7 +321,7 @@ hs_PUI_He = torch_zeros(64,3)
 ###################################################################################################################### days loop (i_day) ###############################################################################################################################
 
 # files with histogram-type observations
-file_list = glob.glob(hitgram_data_path+days_to_analyze+"*.txt")
+file_list = glob.glob(histogram_data_path+days_to_analyze+"*.txt")
 dates_list = []
 dates_start = []
 for file in file_list:
@@ -628,5 +628,6 @@ for i_day in dates_start:                       # days loop (i_day)
 
 
     day_nr = day_nr + 1 # end of the loop/day
+
 
 
