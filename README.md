@@ -47,7 +47,7 @@ Manuscript submitted to ApJ
 
    - Python 3.x
    - Libraries: numpy, scipy
-   - Energy-angle response arrays (E_beam/E_step vs theta) from .sav data from H. A. Elliott et al. 2016
+   - SWAP energy-angle response arrays (E_beam/E_step vs theta) from .sav data (from H. A. Elliott et al. 2016)
   
   > ## Usage Instructions
 
@@ -65,6 +65,15 @@ Manuscript submitted to ApJ
 
    - Python 3.9+
    - Libraries: numpy, astropy, scipy, pandas, torch, solarsystem, uncertainties
+   - SWAP histogram data (generated from SWAP_data.py)
+   - additional data files:
+     - SWAP histogram energy bins (Tab. A1 from D. J. McComas et al. 2022)
+     - SWAP geometric factor 
+     - SWAP efficiency
+     - SWAP trajectory (from NASA PDS) 
+     - SWAP energy-angle response arrays (E_beam/E_step vs theta) from .sav data (from H. A. Elliott et al. 2016)
+     - precalculated response functions (response_function_PUI.npy, response_function_proton.npy, response_function_alpha.npy)
+     - precalculated values ​​normalizing response functions (response_norm_H_12a.npy, response_norm_alpha_12a.npy, response_norm_He_PUI_12a.npy, response_norm_H_12b.npy, response_norm_alpha_12b.npy, response_norm_He_PUI_12b.npy)
 
   > ## Usage Instructions
 
