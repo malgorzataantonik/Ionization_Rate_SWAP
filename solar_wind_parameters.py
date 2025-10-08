@@ -1,3 +1,7 @@
+# Małgorzata Anotnik, Space Research Centre PAS (CBK PAN), Bartycka 18a, 00-716 Warsaw, Poland
+# 01.07.2023
+# Program to calculate and save parameters of solar wind from SWAP data
+
 import numpy as np
 from scipy.integrate import quad
 from numpy import sin, cos, sqrt, exp, pi, where, heaviside, array, empty, arcsin, arccos, tan, abs, cross, dot, log, sum, matrix
@@ -621,3 +625,4 @@ for i_day in dates_start:                       # days loop (i_day)
 
 
     day_nr = day_nr + 1 # end of the loop/day
+
