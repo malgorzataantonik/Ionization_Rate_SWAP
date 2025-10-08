@@ -7,7 +7,7 @@ Manuscript submitted to ApJ
 
 - `SWAP_data.py` – program to read FITS files and save SWAP spectrum to .txt files
 - `response_function.py` – program to calculate SWAP energy-angle response function for rotation-average FOV
-- `solar_wind_parameters.py` – program to calculate parameters of solar wind from SWAP data
+- `solar_wind_parameters.py` – program to calculate and save parameters of solar wind from SWAP data
 
 # SWAP_data.py
 
@@ -65,3 +65,25 @@ Manuscript submitted to ApJ
 
    - Python 3.9+
    - Libraries: numpy, astropy, scipy, pandas, torch, solarsystem, uncertainties
+
+  > ## Usage Instructions
+
+  3. Update the default days to analyze in the script (for example, days_to_analyze = '2021-01-*' to analyze all January 2021):
+     
+     ```days_to_analyze = "YYYY-MM-DD"```
+
+  4. Update the default paths in the script:
+  
+     for the data files:
+
+     ```data_path = 'path/to/data'```
+
+     for SWAP histograms generated from SWAP_data.py:
+
+     ```histogram_data_path ='path/to/histogram_data'```
+
+     and for output directory:
+   
+     ```results_path = 'path/to/results'```
+
+  5. Run the script.
