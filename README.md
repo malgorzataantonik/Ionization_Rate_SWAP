@@ -31,20 +31,34 @@ Manuscript submitted to ApJ
 
      ```data_path = 'path/to/data'```
 
-     for table with SWAP energy bins (Tab. A1 from D. J. McComas et al 2022 ApJ 934 147):
+     for table with SWAP energy bins (Tab. A1 from D. J. McComas et al. 2022):
 
      ```bins_file_name='path/to/energy_bins_table'```
 
      and for output directory:
    
      ```results_path = 'path/to/results'```
+
+  5. Run the script.
    
 # response_function.py
 
   > ## Requirements
 
    - Python 3.x
-   - Libraries: numpy, scipy   
+   - Libraries: numpy, scipy
+   - Energy-angle response arrays (E_beam/E_step vs theta) from .sav data from H. A. Elliott et al. 2016
+  
+  > ## Usage Instructions
+
+  1. Update the default paths in the script:
+  
+     for the .sav energy-angle response arrays:
+
+     ```sav_data = 'path/to/sav_data'```
+
+  2. Run the script.
+
 # solar_wind_parameters.py
 
   > ## Requirements
