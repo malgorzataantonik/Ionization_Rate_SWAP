@@ -211,11 +211,14 @@ def save_to_file():
 ##############################################################################################################################################################################################################################################################
 
 # start parameters
-result_path = 'C:\\Users\\mantonik\\New_Horizons\\results_parameters\\results_'
 days_to_analyze = '2021-01-17' # one example day; program the program works for plans 12a and 12b: from 2008-10-29 to 2023-03-09
 print_output = 1    # 0 - no, 1 - yes
 n_itertions = 2     # number of iterations
 grid_size_PUI = 55  # grid size for calculating PUI distribution, the minimum recommended value is 40
+
+data_path = 'C:\\Users\\mantonik\\New_Horizons\\data\\'
+histogram_data_path = 'C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\'
+result_path = 'C:\\Users\\mantonik\\New_Horizons\\results_parameters\\results_'
 
 #*************************************************************************************************************************************************************************************************************************************************************
 # constants
@@ -242,7 +245,7 @@ eta_max_proton = 55 # [deg]
 eta_max_alpha = 80 # [deg]
 
 #*************************************************************************************************************************************************************************************************************************************************************
-# torch, integaration methods
+# torch, integration methods
 torch.set_default_device('cuda')
 set_up_backend("torch")#, data_type="float64")
 torch.set_default_dtype(torch.float64)
@@ -252,30 +255,30 @@ integaration_method_PUI = Trapezoid()
 integrate_jit_compiled_parts = integaration_method_kappa.get_jit_compiled_integrate(3, grid_size_kappa**3, backend="torch")
 
 #*************************************************************************************************************************************************************************************************************************************************************
-# loading necessary SWAP data: energy bins, geomatric facotr, efficiency, and New Horizons trajectory, E_beam/E_step from .sav data (H.A.Elliott et al.2016)
+# loading necessary SWAP data: energy bins, geometric factor, efficiency, and New Horizons trajectory, E_beam/E_step from .sav data (H.A.Elliott et al.2016)
 
 #energy bins
-file_name='C:\\Users\\mantonik\\New_Horizons\\data\\histogram_energy_bins.txt'
+file_name=data_path+'histogram_energy_bins.txt'
 with open(file_name,'rt') as filedata:
     values = np.genfromtxt(file_name, comments='#', unpack=True)
 energy_bins_12a=values[3,:] 
 energy_bins_12b=values[4,:]
 
-# geomatric facotr
-file_name='C:\\Users\\mantonik\\New_Horizons\\data\\geometric_factor.txt'
+# geometric factor
+file_name=data_path+'geometric_factor.txt'
 with open(file_name,'rt') as filedata:
     values = np.genfromtxt(file_name, comments='#', unpack=True)        #[km^2-sr-eV/eV]
 geometric_factor=values*1.e+6*0.5 # [m^2-sr-m/s / m/s] km na metry oraz konwersja na predkosciowy czynnik geometryczny
 
 # efficiency
-file_name='C:\\Users\\mantonik\\New_Horizons\\data\\efficiency.txt'
+file_name=data_path+'efficiency.txt'
 with open(file_name,'rt') as filedata:
     values = np.genfromtxt(file_name, comments='#', unpack=True,delimiter=',')
 MET_efficiency = values[0,:]
 efficiency = values[2,:]
 
 # New Horizons trajectory
-file_name='C:\\Users\\mantonik\\New_Horizons\\data\\traj_NH_HAE_J2000.tab'
+file_name=data_path+'traj_NH_HAE_J2000.tab'
 with open(file_name,'rt') as filedata:
     values = np.genfromtxt(file_name, dtype=str, unpack=True, delimiter=',')       
 MET=values[0,:]
@@ -291,16 +294,16 @@ NH_lon=values[10,:]
 NH_range=values[11,:]
 
 # energy-angle response arrays (E_beam/E_step vs theta) from .sav data from file (H.A.Elliott et al.2016)
-sav_data = readsav('C:\\Users\\mantonik\\New_Horizons\\data\\swap_calibration_model\\fin_arr_ebea_ang_eb_bg_corr.sav')
+sav_data = readsav(data_path+'fin_arr_ebea_ang_eb_bg_corr.sav')
 E_beam_E_step = sav_data.s4.y[0] 
 E_beam_E_step = E_beam_E_step[:,0]
 E_beam_E_step_PUI=torch.linspace(min(E_beam_E_step), max(E_beam_E_step),300)
 
 #*************************************************************************************************************************************************************************************************************************************************************
 # load the energy-angle response function for rotation-average FOV
-response_function_PUI = torch.from_numpy(np.float32(np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_function_PUI.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
-response_function_proton = torch.from_numpy(np.float32(np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_function_proton.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
-response_function_alpha = torch.from_numpy(np.float32(np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_function_alpha.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
+response_function_PUI = torch.from_numpy(np.float32(np.load(data_path+'response_function_PUI.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
+response_function_proton = torch.from_numpy(np.float32(np.load(data_path+'response_function_proton.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
+response_function_alpha = torch.from_numpy(np.float32(np.load(data_path+'response_function_alpha.npy'))).unsqueeze(0).unsqueeze(0).to('cuda')
 response_size_PUI=response_function_PUI.size()
 response_size_PUI=response_size_PUI[3]
 
@@ -318,7 +321,7 @@ hs_PUI_He = torch_zeros(64,3)
 ###################################################################################################################### days loop (i_day) ###############################################################################################################################
 
 # files with histogram-type observations
-file_list = glob.glob("C:\\Users\\mantonik\\New_Horizons\\results_histograms\\all_days\\"+days_to_analyze+"*.txt")
+file_list = glob.glob(hitgram_data_path+days_to_analyze+"*.txt")
 dates_list = []
 dates_start = []
 for file in file_list:
@@ -353,7 +356,7 @@ for i_day in dates_start:                       # days loop (i_day)
     observations_all_unumpy = unumpy.uarray(observations_all, observations_all_err)
 
 #*************************************************************************************************************************************************************************************************************************************************************
-# trajectory, distance, inflow angles, NH velocity vecotr
+# trajectory, distance, inflow angles, NH velocity vector
 
     #trajectory
     for i in range(0,8077):
@@ -416,13 +419,13 @@ for i_day in dates_start:                       # days loop (i_day)
 
     # loading values ​​normalizing response functions
     if Time(dates_start[day_nr]) < Time('2021-08-09T00:49:07'): 
-        response_norm_H = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_norm_H_12a.npy')
-        response_norm_alpha = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_norm_alpha_12a.npy')
-        response_norm_He_PUI = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_norm_He_PUI_12a.npy')
+        response_norm_H = np.load(data_path+'response_norm_H_12a.npy')
+        response_norm_alpha = np.load(data_path+'response_norm_alpha_12a.npy')
+        response_norm_He_PUI = np.load(data_path+'response_norm_He_PUI_12a.npy')
     else:
-        response_norm_H = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_energy_eta_norm_meanE_new3_newsin_2021.npy')
-        response_norm_alpha = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_norm_alpha_12b.npy')
-        response_norm_He_PUI = np.load('C:\\Users\\mantonik\\New_Horizons\\data\\response_norm_He_PUI_12b.npy')
+        response_norm_H = np.load(data_path+'response_norm_H_12b.npy')
+        response_norm_alpha = np.load(data_path+'response_norm_alpha_12b.npy')
+        response_norm_He_PUI = np.load(data_path+'response_norm_He_PUI_12b.npy')
 
 #*************************************************************************************************************************************************************************************************************************************************************
 
@@ -478,7 +481,7 @@ for i_day in dates_start:                       # days loop (i_day)
         if n_iter == 0: # no H PUI model
             result_proton = minimize(log_likelihood, initial_guess_proton, args=(observations, [0,0,0,0,0], 0), method = 'Powell', bounds=bounds_proton,options={'ftol': 1e-3})
             result_alpha = minimize(log_likelihood, initial_guess_alpha, args=(observations_alpha, [0,0,0,0], 1), method = 'Powell', bounds=bounds_alpha,options={'ftol': 1e-3})
-        else:           # we substract H PUI model
+        else:           # we subtract H PUI model
             result_proton = minimize(log_likelihood, initial_guess_proton, args=(observations, model_PUI_H_all[bin_start_p:bin_stop_p], 0), method = 'Powell', bounds=bounds_proton,options={'ftol': 1e-3})
             result_alpha = minimize(log_likelihood, initial_guess_alpha, args=(observations_alpha, model_PUI_H_all[bin_start_alpha:bin_stop_alpha], 1), method = 'Powell', bounds=bounds_alpha,options={'ftol': 1e-3})
     
@@ -625,4 +628,5 @@ for i_day in dates_start:                       # days loop (i_day)
 
 
     day_nr = day_nr + 1 # end of the loop/day
+
 
